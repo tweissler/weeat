@@ -21,7 +21,7 @@ class RestaurantsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should get delete" do
+  test "should get destroy" do
     get restaurants_delete_url
     assert_response :success
   end
