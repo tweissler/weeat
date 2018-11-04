@@ -1,28 +1,20 @@
 require 'rails_helper'
+require 'json'
+require_relative '../app/controllers/restaurants_controller'
+require_relative './restaurants'
+#TODO: should the reqiures be here or in spec_helper?
 
-describe RestaurantsController, type: :controller do
+RSpec.describe RestaurantsController, type: :controller do
 
-
-  describe "GET #show" do
-    before do
-      get :show, id: restaurant.id
+  describe "#show" do
+    let!(:rest) { create(:restaurant) }
+    it "retrieve restaurant" do
+      get :show, params: { id: rest.id }
+      body = JSON.parse(response.body)
+      expect(body["name"]).to eql("rest")
+      expect(body["rating"]).to eql(0)
     end
 
-    let(:restaurant) { Restaurant.create(name: 'rest1') }
-
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
-    end
-
-    it "response with JSON body containing expected Article attributes" do
-      hash_body = nil
-      expect { hash_body = JSON.parse(response.body).with_indifferent_access }.not_to raise_exception
-      expect(hash_body.keys).to match_array([:id, :name, :cuisine, :rating, :tenbis, :address, :delivery_time])
-      expect(hash_body).to match({
-                                     id: restaurant.id,
-                                     name: 'rest1'
-                                 })
-    end
   end
 
 end

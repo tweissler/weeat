@@ -1,4 +1,5 @@
-require 'active_record/errors'
+require_relative './application_controller'
+require 'active_record'
 
 class RestaurantsController < ApplicationController
   before_action :set_restaurant, only: [:show, :update, :destroy]
