@@ -8,7 +8,7 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants/1
   def show
-
+    @restaurant
   end
 
   #POST /restaurants
@@ -27,12 +27,12 @@ class RestaurantsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_restaurant
-      @restaurant = Restaurant.find(params[:id])
-    end
 
-    def restaurant_params
-      params.require(:restaurant).permit(:name, :cuisine, :rating, :tenbis, :address, :delivery_time)
-    end
+  def set_restaurant
+    @restaurant = Restaurant.find(params[:id])
+  end
+
+  def restaurant_params
+    params.require(:restaurant).permit(:name, :cuisine, :rating, :tenbis, :address, :delivery_time)
+  end
 end
