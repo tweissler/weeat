@@ -9,6 +9,17 @@ class RestaurantsController < ApplicationController
   # GET /restaurants
   def index
     @restaurants = Restaurant.all
+    @restaurants = @restaurants.to_a.delete_if{|rest| !rest[:cuisine].eql? query_params["by_cuisine"]} if query_params.has_key? "by_cuisine"
+    @restaurants = @restaurants.to_a.delete_if{|rest| rest[:rating] < query_params["min_rating"].to_i} if query_params.has_key? "min_rating"
+    @restaurants = @restaurants.to_a.delete_if{|rest| rest[:delivery_time] > query_params["max_delivery_time"].to_i} if query_params.has_key? "max_delivery_time"
+    # unless query_params.nil?
+    #   @restaurants = []
+    #   @restaurants += Restaurant.where(:cuisine => query_params["by_cuisine"]).to_a if query_params.has_key? "by_cuisine"
+    #   @restaurants += Restaurant.where("rating > ?", query_params["min_rating"]).to_a if query_params.has_key? "min_rating"
+    #   @restaurants += Restaurant.where("delivery_time > ?", query_params["max_delivery_time"]).to_a if query_params.has_key? "max_delivery_time"
+    # else
+    #   @restaurants = Restaurant.all
+    # end
     render :json => @restaurants
   end
 
@@ -45,6 +56,10 @@ class RestaurantsController < ApplicationController
 
   def restaurant_params
     params.permit(:id, :name, :cuisine, :rating, :tenbis, :address, :delivery_time)
+  end
+
+  def query_params
+    request.query_parameters.slice(:by_cuisine, :min_rating, :max_delivery_time)
   end
 
   def invalid_id_handler
