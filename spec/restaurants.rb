@@ -3,7 +3,10 @@ include FactoryBot::Syntax::Methods
 
 FactoryBot.define do
   factory :restaurant do
-    name {"rest"}
+    sequence :name do |n|
+      "rest#{n}"
+    end
     cuisine {"cuisine"}
+    address {"address"}
   end
 end

@@ -21,14 +21,14 @@ class RestaurantsController < ApplicationController
   #POST /restaurants
   def create
     @restaurant = Restaurant.create(restaurant_params)
-    render :json => @restaurant.valid? ? @restaurant : {status: "error", code: 400, message: @restaurant.errors.full_messages}
+    #TODO: could there be other errors other than bad request (failed model validations) from this object?
+    @restaurant.valid? ? (render :json => @restaurant, :status => :created) : (render :json => @restaurant.errors.full_messages, :status => :bad_request)
   end
 
   #PATCH /restaurants:/:id
   def update
     @restaurant.update(restaurant_params)
-    #TODO: could there be other errors other than 400 (failed model validations) from this object?
-    render :json => @restaurant.valid? ? @restaurant : {status: "Bad Request", code: 400, message: @restaurant.errors.full_messages}
+    @restaurant.valid? ? (render :json => @restaurant) : (render :json => @restaurant.errors.full_messages, :status => :bad_request)
   end
 
   #DELETE /restaurants/:id
