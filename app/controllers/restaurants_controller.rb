@@ -4,7 +4,6 @@ require 'active_record'
 class RestaurantsController < ApplicationController
   before_action :set_restaurant, only: [:show, :update, :destroy]
   #TODO: consider adding authentication
-  skip_before_action :verify_authenticity_token
   rescue_from ActiveRecord::RecordNotFound, :with => :invalid_id_handler
 
   # GET /restaurants
@@ -25,7 +24,7 @@ class RestaurantsController < ApplicationController
     render :json => @restaurant.valid? ? @restaurant : {status: "error", code: 400, message: @restaurant.errors.full_messages}
   end
 
-  #PATCH /restaurants:/id
+  #PATCH /restaurants:/:id
   def update
     @restaurant.update(restaurant_params)
     #TODO: could there be other errors other than 400 (failed model validations) from this object?
