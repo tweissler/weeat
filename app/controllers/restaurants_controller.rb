@@ -8,24 +8,10 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants
   def index
-    conditions_string = ''
-    conditions_params = Array.new
-
-    if query_params.has_key? "by_cuisine"
-      conditions_string += "cuisine = ? AND "
-      conditions_params.push(query_params["by_cuisine"])
-    end
-    if query_params.has_key? "min_rating"
-      conditions_string += "rating >= ? AND "
-      conditions_params.push(query_params["min_rating"].to_i)
-    end
-    if query_params.has_key? "max_delivery_time"
-      conditions_string += "delivery_time <= ?"
-      conditions_params.push(query_params["max_delivery_time"].to_i)
-    end
-
-    conditions_string.gsub!(/ AND $/, "")
-    @restaurants = conditions_params.any? ? Restaurant.where(conditions_string, *conditions_params) : Restaurant.all
+    @restaurants = Restaurant.all
+    @restaurants = @restaurants.where('cuisine = ?', query_params["by_cuisine"]) if query_params.has_key? "by_cuisine"
+    @restaurants = @restaurants.where('rating >= ?', query_params["min_rating"].to_i) if query_params.has_key? "min_rating"
+    @restaurants = @restaurants.where('delivery_time <= ?', query_params["max_delivery_time"].to_i) if query_params.has_key? "max_delivery_time"
     render :json => @restaurants
   end
 
