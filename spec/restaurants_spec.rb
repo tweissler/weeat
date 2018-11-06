@@ -74,4 +74,14 @@ RSpec.describe RestaurantsController, type: :controller do
     end
   end
 
+  describe "#index" do
+    let!(:rest) { create_list(:restaurant, 4) }
+    it "list restaurants with filter" do
+      get :index, params: { by_cuisine: "a" }
+      expect(response.status).to eq 200
+      body = JSON.parse(response.body)
+      expect(body.length).to eq 0
+    end
+  end
+
 end
