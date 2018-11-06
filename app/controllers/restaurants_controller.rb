@@ -3,7 +3,6 @@ require 'active_record'
 
 class RestaurantsController < ApplicationController
   before_action :set_restaurant, only: [:show, :update, :destroy]
-  #TODO: consider adding authentication
   rescue_from ActiveRecord::RecordNotFound, :with => :invalid_id_handler
 
   # GET /restaurants
@@ -24,7 +23,6 @@ class RestaurantsController < ApplicationController
   #POST /restaurants
   def create
     @restaurant = Restaurant.create(restaurant_params)
-    #TODO: could there be other errors other than bad request (failed model validations) from this object?
     @restaurant.valid? ? (render :json => @restaurant, :status => :created) : (render :json => @restaurant.errors.full_messages, :status => :bad_request)
   end
 
@@ -55,7 +53,6 @@ class RestaurantsController < ApplicationController
   end
 
   def invalid_id_handler
-    #TODO: this is the response in order not to give information regarding existing id's. is this a good decision?
     head :no_content
   end
 

@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'json'
 require_relative '../app/controllers/restaurants_controller'
 require_relative './restaurants'
-#TODO: should the reqiures be here or in spec_helper?
 
 RSpec.describe RestaurantsController, type: :controller do
 
