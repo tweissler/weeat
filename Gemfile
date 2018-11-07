@@ -60,3 +60,8 @@ group :development, :test do
 end
 
 gem 'faraday'
+gem 'faker'
+
+group :test do
+  gem 'database_cleaner'
+end
