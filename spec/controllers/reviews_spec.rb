@@ -32,7 +32,6 @@ RSpec.describe ReviewsController, type: :controller do
   end
 
   describe "#create" do
-    let!(:rest) { FactoryBot.create(:restaurant) }
     it "create review" do
       post :create, params: { name: "rev", restaurant_id: rest.id, rating: 2}
       expect(response.status).to eq 201
