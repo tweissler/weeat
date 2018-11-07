@@ -16,7 +16,6 @@ class LoadRestaurantsWorker
                                                   :address => rest["restaurant"]["location"]["address"] + ", " + rest["restaurant"]["location"]["city"],
                                                   :rating => (rest["restaurant"]["user_rating"]["aggregate_rating"].to_i%3))
 
-
       conn = Faraday.new(:url => 'https://developers.zomato.com')
       review_response = conn.get do |req|
         req.url "/api/v2.1/reviews?res_id=#{rest["restaurant"]["id"]}"

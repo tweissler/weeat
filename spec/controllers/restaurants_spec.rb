@@ -88,4 +88,11 @@ RSpec.describe RestaurantsController, type: :controller do
     end
   end
 
+  describe "#load", :vcr do
+    it "delete restaurant" do
+      get :load
+      expect(response.status).to eq 200
+    end
+  end
+
 end

@@ -67,4 +67,7 @@ group :test do
 end
 
 gem 'sidekiq'
+gem 'vcr'
+gem 'webmock'
+
 
