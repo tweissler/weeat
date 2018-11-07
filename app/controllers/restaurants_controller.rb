@@ -1,4 +1,3 @@
-require_relative './application_controller'
 require 'active_record'
 
 class RestaurantsController < ApplicationController
@@ -47,6 +46,12 @@ class RestaurantsController < ApplicationController
   def destroy
     @restaurant.destroy
     head :no_content
+  end
+
+  #GET /load
+  def load
+    LoadRestaurantsWorker.perform_async
+    render :status => :ok, json: {:message => 'Loading restaurants'}.to_json
   end
 
   private

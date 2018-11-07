@@ -1,24 +1,16 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
-  get 'reviews', to: 'reviews#index'
+  resources :restaurants do
+    collection do
+      get :load
+    end
+  end
 
-  get 'reviews/:id', to: 'reviews#show'
-
-  post 'reviews', to: 'reviews#create'
-
-  patch 'reviews/:id', to: 'reviews#update'
-
-  delete 'reviews/:id', to: 'reviews#destroy'
-
-
-  get 'restaurants', to: 'restaurants#index'
-
-  get 'restaurants/:id', to: 'restaurants#show'
-
-  post 'restaurants', to: 'restaurants#create'
-
-  patch 'restaurants/:id', to: 'restaurants#update'
-
-  delete 'restaurants/:id', to: 'restaurants#destroy'
+  resources :restaurants, except: [:edit, :new] do
+    resources :reviews, except: [:edit, :new]
+  end
+  root 'application#index'
 
 end
