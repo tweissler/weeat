@@ -4,17 +4,19 @@ require_relative '../../app/controllers/reviews_controller'
 
 RSpec.describe ReviewsController, type: :controller do
 
+  let!(:rest) { FactoryBot.create(:restaurant) }
+
   describe "#show" do
     let!(:rev) { FactoryBot.create(:review) }
     it "retrieve review" do
-      get :show, params: { id: rev.id }
+      get :show , params: { id: rev.id, restaurant_id: rest.id }
       expect(response.status).to eq 200
       body = JSON.parse(response.body)
       expect(body["name"]).to be_present
     end
 
     it "retrieve non existing review" do
-      get :show, params: { id: 12345 }
+      get :show, params: { id: 12345, restaurant_id: rest.id }
       expect(response.status).to eq 404
     end
   end
@@ -22,7 +24,7 @@ RSpec.describe ReviewsController, type: :controller do
   describe "#index" do
     let!(:rev) { FactoryBot.create_list(:review, 4) }
     it "list reviews" do
-      get :index
+      get :index, params: {restaurant_id: rest.id}
       expect(response.status).to eq 200
       body = JSON.parse(response.body)
       expect(body.length).to eq 4
@@ -43,7 +45,7 @@ RSpec.describe ReviewsController, type: :controller do
   describe "#update" do
     let!(:rev) { FactoryBot.create(:review) }
     it "update review" do
-      patch :update, params: { id: rev.id, rating: 3 }
+      patch :update, params: { id: rev.id, rating: 3, restaurant_id: rest.id }
       expect(response.status).to eq 200
       body = JSON.parse(response.body)
       expect(body["rating"]).to eql(3)
@@ -53,7 +55,7 @@ RSpec.describe ReviewsController, type: :controller do
   describe "#destroy" do
     let!(:rev) { FactoryBot.create(:review) }
     it "delete review" do
-      delete :destroy, params: { id: rev.id }
+      delete :destroy, params: { id: rev.id, restaurant_id: rest.id}
       expect(response.status).to eq 204
       expect(Review.last).to be_nil
     end

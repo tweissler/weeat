@@ -9,9 +9,13 @@ RSpec.describe RestaurantsController, type: :controller do
 
   describe "#show" do
     let!(:rest) { FactoryBot.create(:italian_with_tenbis) }
-    it "retrieve restaurant" do
+    it "retrieve restaurant successfully" do
       get :show, params: { id: rest.id }
       expect(response.status).to eq 200
+    end
+
+    it "retrieve the correct restaurant" do
+      get :show, params: { id: rest.id }
       body = JSON.parse(response.body)
       expect(body["name"]).to be_present
       expect(body["cuisine"]).to eql("italian")
@@ -33,7 +37,6 @@ RSpec.describe RestaurantsController, type: :controller do
       expect(body.length).to eq 4
     end
 
-    let!(:rest) { FactoryBot.create_list(:restaurant, 4) }
     it "list restaurants with filter" do
       get :index, params: { by_cuisine: "a" }
       expect(response.status).to eq 200
@@ -43,9 +46,13 @@ RSpec.describe RestaurantsController, type: :controller do
   end
 
   describe "#create" do
-    it "create restaurant" do
+    it "create restaurant successfully" do
       post :create, params: { name: "rest" }
       expect(response.status).to eq 201
+    end
+
+    it "create restaurant correctly" do
+      post :create, params: { name: "rest" }
       rest = Restaurant.last
       expect(rest["name"]).to eql("rest")
       expect(rest["tenbis"]).to eql(false)
@@ -60,9 +67,13 @@ RSpec.describe RestaurantsController, type: :controller do
 
   describe "#update" do
     let!(:rest) { FactoryBot.create(:restaurant) }
-    it "update restaurant" do
+    it "update restaurant successfully" do
       patch :update, params: { id: rest.id, delivery_time: 30 }
       expect(response.status).to eq 200
+    end
+
+    it "update restaurant correctly" do
+      patch :update, params: { id: rest.id, delivery_time: 30 }
       body = JSON.parse(response.body)
       expect(body["delivery_time"]).to eql(30)
     end

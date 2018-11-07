@@ -5,18 +5,18 @@ class ReviewsController < ApplicationController
   before_action :set_review, only: [:show, :update, :destroy]
   rescue_from ActiveRecord::RecordNotFound, :with => :invalid_id_handler
 
-  # GET /reviews
+  # GET /restaurants/reviews
   def index
     @reviews = Review.all
     render :json => @reviews
   end
 
-  # GET /reviews/:id
+  # GET /restaurants/reviews/:id
   def show
     render :json => @review
   end
 
-  #POST /reviews
+  #POST /restaurants/reviews
   def create
     begin
       @review = Review.create!(review_params)
@@ -26,7 +26,7 @@ class ReviewsController < ApplicationController
     end
   end
 
-  #PATCH /reviews:/:id
+  #PATCH /restaurants/reviews:/:id
   def update
     begin
       @review.update!(review_params)
@@ -36,7 +36,7 @@ class ReviewsController < ApplicationController
     end
   end
 
-  #DELETE /reviews/:id
+  #DELETE /restaurants/reviews/:id
   def destroy
     @review.destroy
     head :no_content
