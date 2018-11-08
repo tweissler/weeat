@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-  get 'restaurants/list'
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 
-  get 'restaurants/retrieve'
+  resources :restaurants do
+    collection do
+      get :load
+    end
+  end
 
-  get 'restaurants/create'
+  resources :restaurants, except: [:edit, :new] do
+    resources :reviews, except: [:edit, :new]
+  end
+  root 'application#index'
 
-  get 'restaurants/update'
-
-  get 'restaurants/delete'
-
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
