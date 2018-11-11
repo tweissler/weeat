@@ -8,20 +8,23 @@ class RestaurantsController < ApplicationController
   def index
     @restaurants = Restaurant.all
     @restaurants.each do |r|
-      r.rating = get_restaurant_rating r.id
-      Restaurant.update(r.id, {rating: r.rating})
+      rating = get_restaurant_rating r.id
+      Restaurant.update(r.id, {rating: r.rating}) if rating != r.rating
+      r.rating = rating
     end
     @restaurants = @restaurants.where('cuisine = ?', query_params["by_cuisine"]) if query_params.has_key? "by_cuisine"
     @restaurants = @restaurants.where('delivery_time <= ?', query_params["max_delivery_time"].to_i) if query_params.has_key? "max_delivery_time"
     @restaurants = @restaurants.where('rating >= ?', query_params["min_rating"].to_i) if query_params.has_key? "min_rating"
+    @restaurants = @restaurants.where('name LIKE :prefix', prefix: "#{query_params["by_name"]}%") if query_params.has_key? "by_name"
     response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurants
   end
 
   # GET /restaurants/:id
   def show
-    @restaurant.rating = get_restaurant_rating @restaurant.id
-    Restaurant.update(@restaurant.id, {rating: @restaurant.rating})
+    rating = get_restaurant_rating @restaurant.id
+    Restaurant.update(@restaurant.id, {rating: @restaurant.rating}) if rating != @restaurant.rating
+    @restaurant.rating = rating
     response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurant
   end
@@ -73,7 +76,7 @@ class RestaurantsController < ApplicationController
   end
 
   def query_params
-    request.query_parameters.slice(:by_cuisine, :min_rating, :max_delivery_time)
+    request.query_parameters.slice(:by_cuisine, :min_rating, :max_delivery_time, :by_name)
   end
 
   def invalid_id_handler
