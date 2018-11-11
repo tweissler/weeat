@@ -7,18 +7,22 @@ class RestaurantsController < ApplicationController
   # GET /restaurants
   def index
     @restaurants = Restaurant.all
-    @restaurants = @restaurants.where('cuisine = ?', query_params["by_cuisine"]) if query_params.has_key? "by_cuisine"
-    @restaurants = @restaurants.where('rating >= ?', query_params["min_rating"].to_i) if query_params.has_key? "min_rating"
-    @restaurants = @restaurants.where('delivery_time <= ?', query_params["max_delivery_time"].to_i) if query_params.has_key? "max_delivery_time"
-    @restaurants.each do |rest|
-      rest.rating = get_restaurant_rating rest.id
+    @restaurants.each do |r|
+      r.rating = get_restaurant_rating r.id
+      Restaurant.update(r.id, {rating: r.rating})
     end
+    @restaurants = @restaurants.where('cuisine = ?', query_params["by_cuisine"]) if query_params.has_key? "by_cuisine"
+    @restaurants = @restaurants.where('delivery_time <= ?', query_params["max_delivery_time"].to_i) if query_params.has_key? "max_delivery_time"
+    @restaurants = @restaurants.where('rating >= ?', query_params["min_rating"].to_i) if query_params.has_key? "min_rating"
+    response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurants
   end
 
   # GET /restaurants/:id
   def show
     @restaurant.rating = get_restaurant_rating @restaurant.id
+    Restaurant.update(@restaurant.id, {rating: @restaurant.rating})
+    response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurant
   end
 
@@ -26,6 +30,7 @@ class RestaurantsController < ApplicationController
   def create
     begin
       @restaurant = Restaurant.create!(restaurant_params)
+      response.headers['Access-Control-Allow-Origin'] = '*'
       render status: :created, json: @restaurant
     rescue StandardError => e
       render status: :bad_request, json: {message: 'Failed to add a restaurant. Please try again :('}.to_json
@@ -36,6 +41,7 @@ class RestaurantsController < ApplicationController
   def update
     begin
       @restaurant.update!(restaurant_params)
+      response.headers['Access-Control-Allow-Origin'] = '*'
       render status: :ok, json: @restaurant
     rescue StandardError => e
       render status: :bad_request, json: {message: 'Failed to update a restaurant. Please try again :('}.to_json
@@ -51,6 +57,7 @@ class RestaurantsController < ApplicationController
   #GET /load
   def load
     LoadRestaurantsWorker.perform_async
+    response.headers['Access-Control-Allow-Origin'] = '*'
     render :status => :ok, json: {:message => 'Loading restaurants'}.to_json
   end
 
@@ -70,6 +77,7 @@ class RestaurantsController < ApplicationController
   end
 
   def invalid_id_handler
+    response.headers['Access-Control-Allow-Origin'] = '*'
     render status: :not_found
   end
 
