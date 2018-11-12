@@ -7,11 +7,6 @@ class RestaurantsController < ApplicationController
   # GET /restaurants
   def index
     @restaurants = Restaurant.all
-    @restaurants.each do |r|
-      rating = get_restaurant_rating r.id
-      Restaurant.update(r.id, {rating: r.rating}) if rating != r.rating
-      r.rating = rating
-    end
     @restaurants = @restaurants.where('cuisine = ?', query_params["by_cuisine"]) if query_params.has_key? "by_cuisine"
     @restaurants = @restaurants.where('delivery_time <= ?', query_params["max_delivery_time"].to_i) if query_params.has_key? "max_delivery_time"
     @restaurants = @restaurants.where('rating >= ?', query_params["min_rating"].to_i) if query_params.has_key? "min_rating"
@@ -22,9 +17,9 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants/:id
   def show
-    rating = get_restaurant_rating @restaurant.id
-    Restaurant.update(@restaurant.id, {rating: @restaurant.rating}) if rating != @restaurant.rating
-    @restaurant.rating = rating
+    # rating = get_restaurant_rating @restaurant.id
+    # Restaurant.update(@restaurant.id, {rating: @restaurant.rating}) if rating != @restaurant.rating
+    # @restaurant.rating = rating
     response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurant
   end
@@ -82,14 +77,6 @@ class RestaurantsController < ApplicationController
   def invalid_id_handler
     response.headers['Access-Control-Allow-Origin'] = '*'
     render status: :not_found
-  end
-
-  def get_restaurant_rating(rest_id)
-    reviews = Review.where(:restaurant_id => rest_id)
-    return 0 if reviews.empty?
-    rev_sum = 0
-    reviews.each { |rev| rev_sum += rev.rating }
-    rev_sum/reviews.length
   end
 
 end

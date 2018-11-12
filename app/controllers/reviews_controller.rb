@@ -20,6 +20,7 @@ class ReviewsController < ApplicationController
   def create
     begin
       @review = Review.create!(review_params)
+      update_rating @review.restaurant_id
       render status: :created, json: @review
     rescue StandardError => e
       render status: :bad_request, json: {message: 'Failed to add a review. Please try again :('}.to_json
@@ -30,6 +31,7 @@ class ReviewsController < ApplicationController
   def update
     begin
       @review.update!(review_params)
+      update_rating @review.restaurant_id
       render status: :ok, json: @review
     rescue StandardError => e
       render status: :bad_request, json: {message: 'Failed to update a review. Please try again :('}.to_json
@@ -55,6 +57,20 @@ class ReviewsController < ApplicationController
 
   def invalid_id_handler
     render status: :not_found
+  end
+
+  def update_rating rest_id
+    r = Restaurant.find(rest_id)
+    rating = get_restaurant_rating r.id
+    Restaurant.update(r.id, {rating: r.rating}) if rating != r.rating
+  end
+
+  def get_restaurant_rating(rest_id)
+    reviews = Review.where(:restaurant_id => rest_id)
+    return 0 if reviews.empty?
+    rev_sum = 0
+    reviews.each { |rev| rev_sum += rev.rating }
+    rev_sum/reviews.length
   end
 
 end
