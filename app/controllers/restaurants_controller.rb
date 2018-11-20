@@ -17,9 +17,6 @@ class RestaurantsController < ApplicationController
 
   # GET /restaurants/:id
   def show
-    # rating = get_restaurant_rating @restaurant.id
-    # Restaurant.update(@restaurant.id, {rating: @restaurant.rating}) if rating != @restaurant.rating
-    # @restaurant.rating = rating
     response.headers['Access-Control-Allow-Origin'] = '*'
     render :json => @restaurant
   end
@@ -31,7 +28,7 @@ class RestaurantsController < ApplicationController
       response.headers['Access-Control-Allow-Origin'] = '*'
       render status: :created, json: @restaurant
     rescue StandardError => e
-      render status: :bad_request, json: {message: 'Failed to add a restaurant. Please try again :('}.to_json
+      render status: :bad_request, json: {message: "Failed to add a restaurant. Please try again :( #{e.message}"}.to_json
     end
   end
 

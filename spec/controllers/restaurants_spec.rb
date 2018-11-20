@@ -8,7 +8,7 @@ RSpec.describe RestaurantsController, type: :controller do
   DatabaseCleaner.strategy = :truncation
 
   describe "#show" do
-    let!(:rest) { FactoryBot.create(:italian_with_tenbis) }
+    let(:rest) { FactoryBot.create(:italian_with_tenbis) }
     it "retrieve restaurant successfully" do
       get :show, params: { id: rest.id }
       expect(response.status).to eq 200
@@ -49,6 +49,7 @@ RSpec.describe RestaurantsController, type: :controller do
     it "create restaurant successfully" do
       post :create, params: { name: "rest" }
       expect(response.status).to eq 201
+      expect(Restaurant.count).to eq 1
     end
 
     it "create restaurant correctly" do
