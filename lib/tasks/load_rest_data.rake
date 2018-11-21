@@ -9,7 +9,7 @@ task :load_rest_data => :environment do
 
   JSON.parse(response.body)["restaurants"].each do |rest|
     created_rest = Restaurant.find_or_create_by(:name => rest["restaurant"]["name"], :cuisine => rest["restaurant"]["cuisines"].split(",").first,
-                                                :address => rest["restaurant"]["location"]["address"] + ", " + rest["restaurant"]["location"]["city"],
+                                                :address => rest["restaurant"]["location"]["latitude"] + " " + rest["restaurant"]["location"]["longitude"],
                                                 :rating => (rest["restaurant"]["user_rating"]["aggregate_rating"].to_i%3))
 
     conn = Faraday.new(:url => 'https://developers.zomato.com')

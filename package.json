@@ -1,5 +1,16 @@
 {
   "name": "weeat",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "react-router": "^4.3.1",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.4"
+  },
+  "devDependencies": {
+    "babel-jest": "^23.6.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.7.0",
+    "jest": "^23.6.0",
+    "sinon": "^7.1.1"
+  }
 }
