@@ -12,5 +12,4 @@ Rails.application.routes.draw do
     resources :reviews, except: [:edit, :new]
   end
   root 'application#index'
-
 end
