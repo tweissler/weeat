@@ -2,8 +2,6 @@ Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  resources :restaurants, path: ''
-
   resources :restaurants do
     collection do
       get :load
